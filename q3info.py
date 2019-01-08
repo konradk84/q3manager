@@ -22,7 +22,8 @@ class run_thread(threading.Thread):
 def run_quake(server):
     os.chdir('e:\g\q3')
     #subprocess.call(['cd e:\g\q3'])
-    subprocess.Popen('quake3.exe +connect ctf.q3msk.ru')
+    q = 'quake3.exe +connect ctf.q3msk.ru'
+    subprocess.Popen(q)
     #subprocess.Popen('cd E:\g\q3\\')
     #subprocess.Popen('E:')
     #subprocess.Popen(['e:\g\q3\quake3.exe +connect ctf.q3msk.ru'])
@@ -72,27 +73,43 @@ def menu():
     while True:
         print('\n         Quake 3 scanner\n')
         print('select option:           \n')
-        print('(1) print servers')
-        print('(2) add server')
-        print('(3) remove server')
-        print('(4) scan')
-        print('(5) connect')
+        print('(1) scan')
+        print('(2) connect')
+        print('(3) print servers')
+        print('(4) add server')
+        print('(5) remove server')
         print('(q) quit')
         user_input = input()
         if user_input == 'q':
             break
-        elif user_input == '4':
+        elif user_input == '1':
             check_port(servers)
             os.system("PAUSE")
-        elif user_input == '5':
-            #create thread here, change folder and then run q3
+        elif user_input == '2':
             server = 'asd'
             run_thread(server).start()
-            #subprocess.Popen('E:\g\q3\quake3.exe')
+        elif user_input == '3':
+            if not os.path.isfile(servers_file):
+                print('there is no servers yet')
+            else:
+                get_servers = open(servers_file, 'r')
+                while True:
+                    server_line = get_servers.read()
+                    print(server_line)
+                    if server_line == '':
+                        get_servers.close()
+                        break
+        elif user_input == '4':
+            get_servers = open(servers_file, 'a')
+            print('enter server address or address:port')
+            server_from_user = input()
+            get_servers.write(server_from_user + '\n')
+            get_servers.close()    
+
         else:
             continue
-
 base= b'\xFF\xFF\xFF\xFF'
+servers_file = 'server_list.txt'
 menu()
 
 
