@@ -35,11 +35,11 @@ def make_servers_dic():
                 get_servers.close()
                 return server_dict
             server_dict[number] = server_line
-            #print("mamy: ", server_dict.values())
+        return server_dict
 
 def show_servers(server_dict):
+    print('server list contains:\n')
     servers_count = len(server_dict)
-    #print("mamyw show servers: ", server_dict.values(), server_dict.keys())
     #from 1 to servers_count, print number and dict value
     for server in range(1, servers_count+1):
         print(server, server_dict[server])
@@ -47,8 +47,8 @@ def show_servers(server_dict):
 
 def add_server():
     get_servers = open(servers_file, 'a')
-    print('enter server address or address:port')
-    server_from_user = input()
+    #print('enter server address or address:port')
+    server_from_user = input('enter server address or address:port\n: ')
     if server_from_user.find(':') == -1:
         print('port not given. default added')
         server_from_user = server_from_user + ':27960'
@@ -58,16 +58,13 @@ def add_server():
 
 def remove_server(server_dict):
     while True:
-        print('server list contains:\n')
         servers_count = show_servers(server_dict)
-        print('\nenter server number to remove or (e) to exit')
-        choice = input()
-        print('jest?: ', choice.isdigit())
+        #print('\nenter server number to remove or (e) to exit')
+        choice = input('\nenter server number to remove or (e) to exit: ')
         if choice == 'e':
             break
         elif choice.isdigit():
-            if int(choice) < servers_count or int(choice) > 0:
-                print('otiweramy')
+            if int(choice) <= servers_count and int(choice) > 0:
                 file = open(servers_file, 'r')
                 server_lines = file.readlines()
                 file.close()
@@ -75,19 +72,14 @@ def remove_server(server_dict):
                 for line in server_lines:
                     if line != str(server_dict[int(choice)] +'\n'):
                         file.write(line)
-                        #print('asd: ', line)
-                        #print(server_dict[int(choice)])
-                        #print('linia: ', len(line), type(line))
-                        #print('warosc: ', len(server_dict[int(choice)]), type(server_dict[int(choice)]))
                 file.close()
-                break
+                print('server removed')
+                return show_servers(make_servers_dic())
             else:
                 print('wrong number\n')    
         else:
             print('wrong number\n')
             continue
-        #servers_count = len(server_dict)
-        #print(type(servers_count), type(choice))
 
 def parse_respond(buf):
     print('buf: ', buf)
@@ -134,11 +126,11 @@ def manage_choice(choice):
         server = 'asd'
         run_thread(server).start()
     elif choice == '3':
-        show_servers(server_dict)
+        show_servers(make_servers_dic())
     elif choice == '4':
         add_server()
     elif choice == '5':
-        remove_server(server_dict)
+        remove_server(make_servers_dic())
     else:
         print('wrong choice')
 
@@ -152,7 +144,7 @@ def menu():
         print('(4) add server')
         print('(5) remove server')
         print('(q) quit')
-        user_input = input()
+        user_input = input(': ')
         if user_input == 'q':
             break
         else:
@@ -160,10 +152,6 @@ def menu():
         
 base= b'\xFF\xFF\xFF\xFF'
 servers_file = 'server_list.txt'
-server_dict = make_servers_dic()
-#print(server_dict.keys())
-#print(server_dict.values())
-#print(server_dict[3])
 menu()
 
 
