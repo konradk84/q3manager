@@ -1,2 +1,8 @@
-test123:27960
-test11111:27960
+ctf.q3msk.ru:27960
+meat.q3msk.ru:27960
+q3msk.ru:7790
+q3msk.ru:27960
+q3msk.ru:27961
+q3msk.ru:27962
+q3msk.ru:27963
+q3msk.ru:27964
