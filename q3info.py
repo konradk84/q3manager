@@ -10,9 +10,11 @@ class run_thread(threading.Thread):
         result = run_quake(self.server)
 
 def run_quake(server):
+    script_dir = os.getcwd()
     os.chdir('e:\g\q3')
-    q = 'quake3.exe +connect ctf.q3msk.ru'
+    q = 'quake3.exe +connect ' + server
     subprocess.Popen(q)
+    os.chdir(script_dir)
 
 def connect(server_dict):
     while True:
@@ -39,7 +41,7 @@ def set_status_query(base):
     status += b'getstatus xxx'
     return status
 
-def make_servers_dic():
+def make_servers_dict():
     if not os.path.isfile(servers_file):
         print('there is no servers yet')
     else:
@@ -80,7 +82,7 @@ def add_server():
         print('server with port: ', server_from_user)
     get_servers.write(server_from_user + '\n')
     get_servers.close()
-    return show_servers(make_servers_dic())
+    return show_servers(make_servers_dict())
 
 def validate_choice(choice, servers_count):
     if choice.isdigit():
@@ -111,7 +113,7 @@ def remove_server(server_dict):
                         file.write(line)
                 file.close()
                 print('server removed')
-                return show_servers(make_servers_dic())
+                return show_servers(make_servers_dict())
 
 def parse_respond(buf):
     print('buf: ', buf)
@@ -149,15 +151,15 @@ def scan_servers(server_dict, info):
 
 def manage_choice(choice):
     if choice == '1':
-        scan_servers(make_servers_dic(), set_info_query(base))
+        scan_servers(make_servers_dict(), set_info_query(base))
     elif choice == '2':
-        connect(make_servers_dic())        
+        connect(make_servers_dict())        
     elif choice == '3':
-        show_servers(make_servers_dic())
+        show_servers(make_servers_dict())
     elif choice == '4':
         add_server()
     elif choice == '5':
-        remove_server(make_servers_dic())
+        remove_server(make_servers_dict())
     else:
         print('wrong choice')
 
