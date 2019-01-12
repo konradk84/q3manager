@@ -24,10 +24,7 @@ def connect(server_dict):
             break
         else:
             if validate_choice(choice, server_count):
-                #print('mamy: ', server_dict[1])
-                #print('mamy: ', server_dict[int(choice)])
                 server = server_dict[int(choice)]
-                #input()
                 run_thread(server).start()
                 break
 
@@ -98,7 +95,6 @@ def validate_choice(choice, servers_count):
 def remove_server(server_dict):
     while True:
         servers_count = show_servers(server_dict)
-        #print('\nenter server number to remove or (e) to exit')
         choice = input('\nenter server number to remove or (c) to cancel:\n ')
         if choice == 'c':
             break
@@ -115,13 +111,25 @@ def remove_server(server_dict):
                 print('server removed')
                 return show_servers(make_servers_dict())
 
-def parse_respond(buf):
-    print('buf: ', buf)
+def parse_respond(buf, server_number):
+    #print('buf: ', buf)
+    hostname_start = buf.find('hostname')
+    hostname_end = buf.find('protocol')
+    hostname = buf[hostname_start+20 : hostname_end-10]
+    hum_players_start = buf.find('g_humanplayers')
+    hum_players = buf[hum_players_start : ]
+    hum_players_start = hum_players.find('g_humanplayers')
+    hum_players_end = hum_players.find('clients')
+    mapname_start = buf.find('mapname')
+    mapname = buf[mapname_start+9 : hostname_start-2]
+    hum_players = hum_players[hum_players_start+16 : hum_players_end-2]
+    print('{3}: hostname: {0}  players: {1}  map: {2}'.format(hostname, hum_players, mapname, server_number))
 
 def scan_servers(server_dict, info):
+    #print('SERVER: ' , server)
     for server in range(1, count_servers(server_dict)+1):
-        print('SERVER: ' , server)
         if any(":" in s for s in server_dict[server]):
+            server_number = server
             port_index =server_dict[server].find(':')
             port = server_dict[server][port_index : len(server_dict[server])]
             port = port.strip(':')
@@ -140,13 +148,13 @@ def scan_servers(server_dict, info):
             r,w,e = select.select([sock], [], [], timeout)
             if sock in r:
                 buf = sock.recvfrom(1024)
-                parse_respond(buf)
+                parse_respond(str(buf), server_number)
                 break
             else:
                 print('no data')
         if (sock.sendto(info, (server, port)) == 1):
             print('sendto error')
-    os.system("PAUSE")
+    #os.system("PAUSE")
     #TODO: po udanym skanowaniu zatrzymaj os.system("PAUSE")
 
 def manage_choice(choice):
