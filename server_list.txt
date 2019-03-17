@@ -6,3 +6,7 @@ q3msk.ru:27961
 q3msk.ru:27962
 q3msk.ru:27963
 q3msk.ru:27964
+88.198.221.99:27960
+se.q3msk.ru:27961
+n3.q3msk.ru:7700
+n3.q3msk.ru:777

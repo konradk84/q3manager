@@ -1,6 +1,17 @@
-import socket, select, sys, os, subprocess, threading
+import socket, select, sys, os, subprocess, threading, wmi
 
 #servers = [ 'ctf.q3msk.ru', 'meat.q3msk.ru', 'q3msk.ru:7790', 'q3msk.ru', 'q3msk.ru:27961', 'q3msk.ru:27962', 'q3msk.ru:27963', 'q3msk.ru:27964' ]
+
+
+def check_q3process():
+    c = wmi.WMI()
+    for process in c.Win32_Process():
+        if(process.Name == "quake3.exe"):
+            return process
+    return False
+
+def kill_q3process(q3process):
+    q3process.Terminate()
 
 class run_thread(threading.Thread):
     def __init__(self, server):
@@ -11,7 +22,7 @@ class run_thread(threading.Thread):
 
 def run_quake(server):
     script_dir = os.getcwd()
-    os.chdir('e:\g\q3')
+    os.chdir('d:\g\q3')
     q = 'quake3.exe +connect ' + server
     subprocess.Popen(q)
     os.chdir(script_dir)
@@ -25,6 +36,9 @@ def connect(server_dict):
         else:
             if validate_choice(choice, server_count):
                 server = server_dict[int(choice)]
+                q3process = check_q3process()
+                if(q3process):
+                    kill_q3process(q3process)
                 run_thread(server).start()
                 break
 
@@ -152,6 +166,7 @@ def scan_servers(server_dict, info):
                 break
             else:
                 print('no data')
+                break
         if (sock.sendto(info, (server, port)) == 1):
             print('sendto error')
     #os.system("PAUSE")
