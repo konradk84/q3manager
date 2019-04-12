@@ -6,7 +6,8 @@ import socket, select, sys, os, subprocess, threading, wmi
 def check_q3process():
     c = wmi.WMI()
     for process in c.Win32_Process():
-        if(process.Name == "quake3.exe"):
+        #if(process.Name == "quake3.exe"):
+        if(process.Name == "quake3e.x64.exe"):
             return process
     return False
 
@@ -22,8 +23,10 @@ class run_thread(threading.Thread):
 
 def run_quake(server):
     script_dir = os.getcwd()
-    os.chdir('d:\g\q3')
-    q = 'quake3.exe +connect ' + server
+   #os.chdir('d:\g\q3')
+    #q = 'quake3.exe +connect ' + server
+    os.chdir('d:\g\q3e')
+    q = 'quake3e.x64.exe +connect ' + server
     subprocess.Popen(q)
     os.chdir(script_dir)
 
