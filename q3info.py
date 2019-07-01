@@ -32,7 +32,9 @@ def run_quake(server):
 
 def connect(server_dict):
     while True:
-        server_count = show_servers(server_dict)
+        #uncomment to print list server beffore enter choice number
+        #server_count = show_servers(server_dict)
+        server_count = count_servers(server_dict)        
         choice = input('\nenter server number to connect or (c) to cancel:\n ')
         if choice == 'c':
             break
