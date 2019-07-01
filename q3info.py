@@ -130,17 +130,31 @@ def remove_server(server_dict):
 
 def parse_respond(buf, server_number):
     #print('buf: ', buf)
-    hostname_start = buf.find('hostname')
-    hostname_end = buf.find('protocol')
-    hostname = buf[hostname_start+20 : hostname_end-10]
+    mapnameBeg = buf.find('mapname')
+    mapnameToTheEnd = buf[mapnameBeg:]
+    #print("aaaa", mapnameToTheEnd)
+    mapnameSlashFirstEnd = mapnameToTheEnd[9:]
+    #print("bbbb", mapnameSlashFirstEnd)
+    mapnameSlashSecoundBeg = mapnameSlashFirstEnd.find('\\\\')
+    mapname = mapnameSlashFirstEnd[:mapnameSlashSecoundBeg]
+    #print("map: ", mapname)
+
+    humPlayersBeg = buf.find("g_humanplayers")
+    humPlayersToTheEnd = buf[humPlayersBeg:]
+    #print("cccc", humPlayersToTheEnd)
+    humPlayersSlashFirstEnd = humPlayersToTheEnd[16:]
+    #print("dddd", humPlayersSlashFirstEnd)
+    humPlayersSlashSecoundBeg = humPlayersSlashFirstEnd.find('\\\\')
+    humPlayers = humPlayersSlashFirstEnd[:humPlayersSlashSecoundBeg]
+    #print("players: ", humPlayers)
+
     hum_players_start = buf.find('g_humanplayers')
     hum_players = buf[hum_players_start : ]
     hum_players_start = hum_players.find('g_humanplayers')
     hum_players_end = hum_players.find('clients')
-    mapname_start = buf.find('mapname')
-    mapname = buf[mapname_start+9 : hostname_start-2]
     hum_players = hum_players[hum_players_start+16 : hum_players_end-2]
-    print('{3}: hostname: {0}  players: {1}  map: {2}'.format(hostname, hum_players, mapname, server_number))
+    #print('{3}: hostname: {0}  players: {1}  map: {2}'.format(hostname, hum_players, mapname, server_number))
+    print("{2}: players: {1} map: {0}".format(mapname, humPlayers, server_number))
 
 def scan_servers(server_dict, info):
     #print('SERVER: ' , server)
@@ -209,28 +223,3 @@ base= b'\xFF\xFF\xFF\xFF'
 servers_file = 'server_list.txt'
 menu()
 
-
-
-''' #extra data
-while (True):
-    timeout = 1
-    r,w,e = select.select([sock], [], [], timeout)
-    if sock in r:
-        buf = sock.recvfrom(1024)
-        print('buf: ', buf)
-        break
-    else:
-        print('no data')
-'''
-
-#print('servers: , meat.q3msk.ru, ctf.q3msk.ru, q3msk.ru:7790, ffa.q3msk.ru, q3msk.ru')
-
-#if len(sys.argv) < 2:
-#    print(''', Too few arguments. Usage: q3info.py <address> optional <port>''')
-#    exit()
-
-#if len(sys.argv) == 3:
-#    port = sys.argv[2]
-#else:
-#    port = 27960
-#host = sys.argv[1]
