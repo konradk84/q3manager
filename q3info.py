@@ -1,12 +1,9 @@
-import socket, select, sys, os, subprocess, threading, wmi
-
-#servers = [ 'ctf.q3msk.ru', 'meat.q3msk.ru', 'q3msk.ru:7790', 'q3msk.ru', 'q3msk.ru:27961', 'q3msk.ru:27962', 'q3msk.ru:27963', 'q3msk.ru:27964' ]
-
+import socket, select, sys, os, subprocess, threading, wmi, colorama
+from colorama import Fore, Style, Back
 
 def check_q3process():
     c = wmi.WMI()
     for process in c.Win32_Process():
-        #if(process.Name == "quake3.exe"):
         if(process.Name == "quake3e.x64.exe"):
             return process
     return False
@@ -23,8 +20,6 @@ class run_thread(threading.Thread):
 
 def run_quake(server):
     script_dir = os.getcwd()
-   #os.chdir('d:\g\q3')
-    #q = 'quake3.exe +connect ' + server
     os.chdir('d:\g\q3e')
     q = 'quake3e.x64.exe +connect ' + server
     subprocess.Popen(q)
@@ -130,55 +125,49 @@ def remove_server(server_dict):
                 print('server removed')
                 return show_servers(make_servers_dict())
 
-'''def parse_respond(buf, server_number):
-    #print('buf: ', buf)
-    mapnameBeg = buf.find('mapname')
-    mapnameToTheEnd = buf[mapnameBeg:]
-    #print("aaaa", mapnameToTheEnd)
-    mapnameSlashFirstEnd = mapnameToTheEnd[9:]
-    #print("bbbb", mapnameSlashFirstEnd)
-    mapnameSlashSecoundBeg = mapnameSlashFirstEnd.find('\\\\')
-    mapname = mapnameSlashFirstEnd[:mapnameSlashSecoundBeg]
-    #print("map: ", mapname)
+def getGametypeName(gametypeStr):
+    #print(type(gametypeStr))
+    if(gametypeStr == "0"):
+        return "FFA"
+    elif(gametypeStr == "1"):
+        return "1v1"
+    elif(gametypeStr == "2"):
+        return "TDM"
+    elif(gametypeStr == "3"):
+        return "FREEZ"
+    elif(gametypeStr == "4"):
+        return "CTF"
+    else:
+        return "not known game type or missing"
 
-    humPlayersBeg = buf.find("g_humanplayers")
-    humPlayersToTheEnd = buf[humPlayersBeg:]
-    #print("cccc", humPlayersToTheEnd)
-    humPlayersSlashFirstEnd = humPlayersToTheEnd[16:]
-    #print("dddd", humPlayersSlashFirstEnd)
-    humPlayersSlashSecoundBeg = humPlayersSlashFirstEnd.find('\\\\')
-    humPlayers = humPlayersSlashFirstEnd[:humPlayersSlashSecoundBeg]
-    #print("players: ", humPlayers)
-
-    hum_players_start = buf.find('g_humanplayers')
-    hum_players = buf[hum_players_start : ]
-    hum_players_start = hum_players.find('g_humanplayers')
-    hum_players_end = hum_players.find('clients')
-    hum_players = hum_players[hum_players_start+16 : hum_players_end-2]
-    #print('{3}: hostname: {0}  players: {1}  map: {2}'.format(hostname, hum_players, mapname, server_number))
-    print("{2}: players: {1} map: {0}".format(mapname, humPlayers, server_number))
-'''
 def parse_respond(buf, server_number):
+    mapname = False
+    humplayers = False
+    hostname = False
+    gametype = False
     buffer = buf.split('\\')
-    for b in buffer:
-        if b == 'mapname':
-            #print(type(buffer))
-            #print('b: ', b)
-            a = buffer.index(b)            
-            #print(type(b))
-            #print('a: ', a)
-            print("mapname: ", buffer[a+2])
-        if b == "g_humanplayers":
-            a = buffer.index(b)
-            print("players: ", buffer[a+2])
-        if b == "hostname":
-            a = buffer.index(b)
-            print("hostname ", buffer[a+3])
-            
-    #print("buffer: ", buffer[2])
+    #print("buf: ", buf)
+    for listElement in buffer:
+        if listElement == 'mapname':
+            mapnameIndex = buffer.index(listElement)
+            mapname = buffer[mapnameIndex+2]
+        if listElement == "g_humanplayers":
+            humplayersIndex = buffer.index(listElement)
+            humplayers = buffer[humplayersIndex+2]
+        if listElement == "hostname":
+            hostnameIndex = buffer.index(listElement)
+            hostname = buffer[hostnameIndex+3]
+        if listElement == "gametype":
+            gametypeIndex = buffer.index(listElement)
+            gametype = getGametypeName(buffer[gametypeIndex+2])
+            #gametype = buffer[gametypeIndex+3]             
+    if(mapname != False and humplayers != False and hostname != False and gametype != False):
+        if(humplayers == '0'):
+            print("{:2d}: {:6} {} {:>4} {} {:20} {}".format(server_number, gametype, Style.NORMAL, humplayers, Style.RESET_ALL, mapname, hostname))
+        else:
+            print("{:2d}: {:6} {} {:>4} {} {:20} {}".format(server_number, gametype, Style.BRIGHT, humplayers, Style.RESET_ALL, mapname, hostname))
 
 def scan_servers(server_dict, info):
-    #print('SERVER: ' , server)
     for server in range(1, count_servers(server_dict)+1):
         if any(":" in s for s in server_dict[server]):
             server_number = server
