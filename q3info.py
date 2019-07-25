@@ -12,7 +12,7 @@ def kill_q3process(q3process):
     q3process.Terminate()
 
 class run_thread(threading.Thread):
-    def __init__(self, server):
+    def __init__(self, server): 
         threading.Thread.__init__(self)
         self.server = server
     def run(self):
@@ -233,3 +233,9 @@ base= b'\xFF\xFF\xFF\xFF'
 servers_file = 'server_list.txt'
 menu()
 
+'''
+info = b'\xFF\xFF\xFF\xFF'
+status = info
+info += b'getinfo xxx'
+status += b'getstatus xxx'
+'''
