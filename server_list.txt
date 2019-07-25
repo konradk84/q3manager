@@ -4,13 +4,11 @@ meat.q3msk.ru:27960
 n3.q3msk.ru:7700
 q3msk.ru:7790
 n3.q3msk.ru:27977
-se.q3msk.ru:27961
 q3msk.ru:27960
 q3msk.ru:27961
 q3msk.ru:27962
 q3msk.ru:27963
 q3msk.ru:27964
-88.198.221.99:27960
 se.q3msk.ru:27963
 85.10.203.89:27960
 85.10.203.89:27961

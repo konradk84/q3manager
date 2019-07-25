@@ -130,7 +130,7 @@ def remove_server(server_dict):
                 print('server removed')
                 return show_servers(make_servers_dict())
 
-def parse_respond(buf, server_number):
+'''def parse_respond(buf, server_number):
     #print('buf: ', buf)
     mapnameBeg = buf.find('mapname')
     mapnameToTheEnd = buf[mapnameBeg:]
@@ -157,6 +157,25 @@ def parse_respond(buf, server_number):
     hum_players = hum_players[hum_players_start+16 : hum_players_end-2]
     #print('{3}: hostname: {0}  players: {1}  map: {2}'.format(hostname, hum_players, mapname, server_number))
     print("{2}: players: {1} map: {0}".format(mapname, humPlayers, server_number))
+'''
+def parse_respond(buf, server_number):
+    buffer = buf.split('\\')
+    for b in buffer:
+        if b == 'mapname':
+            #print(type(buffer))
+            #print('b: ', b)
+            a = buffer.index(b)            
+            #print(type(b))
+            #print('a: ', a)
+            print("mapname: ", buffer[a+2])
+        if b == "g_humanplayers":
+            a = buffer.index(b)
+            print("players: ", buffer[a+2])
+        if b == "hostname":
+            a = buffer.index(b)
+            print("hostname ", buffer[a+3])
+            
+    #print("buffer: ", buffer[2])
 
 def scan_servers(server_dict, info):
     #print('SERVER: ' , server)
