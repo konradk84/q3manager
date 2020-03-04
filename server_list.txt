@@ -2,8 +2,11 @@ ctf.q3msk.ru:27960
 n3.q3msk.ru:777
 meat.q3msk.ru:27960
 n3.q3msk.ru:7700
-q3msk.ru:7790
+ctf.q3msk.ru:27970
+n3.q3msk.ru:888
 n3.q3msk.ru:27977
+q3msk.ru:7790
+lv.q3msk.ru:27961
 q3msk.ru:27960
 q3msk.ru:27961
 q3msk.ru:27962
@@ -12,3 +15,4 @@ q3msk.ru:27964
 se.q3msk.ru:27963
 85.10.203.89:27960
 85.10.203.89:27961
+lv.q3msk.ru:27961

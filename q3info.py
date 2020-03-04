@@ -49,8 +49,8 @@ def set_info_query(base):
 
 def set_status_query(base):
     status = base
-    status += b'getstatus xxx'
     return status
+    status += b'getstatus xxx'
 
 def make_servers_dict():
     if not os.path.isfile(servers_file):
@@ -163,7 +163,7 @@ def parse_respond(buf, server_number):
             #gametype = buffer[gametypeIndex+3]             
     if(mapname != False and humplayers != False and hostname != False and gametype != False):
         if(humplayers == '0'):
-            print("{:2d}: {:6} {} {:>4} {} {:20} {}".format(server_number, gametype, Style.NORMAL, humplayers, Style.RESET_ALL, mapname, hostname))
+            print("{:2d}: {:6} {} {:>4} {} {:20} {}".format(server_number, gametype, Fore.BLACK, humplayers, Style.RESET_ALL, mapname, hostname))
         else:
             print("{:2d}: {:6} {} {:>4} {} {:20} {}".format(server_number, gametype, Style.BRIGHT, humplayers, Style.RESET_ALL, mapname, hostname))
 
@@ -180,24 +180,28 @@ def scan_servers(server_dict, info):
             #tu jest ryzyko, ze jesli ktos doda z palca cos to pliku i nie bedzie tam : to sie zesra
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         port = int(port)
-        sock.connect((server, port))
-        if (sock.sendto(info, (server, port)) == 1):
-            print('sendto error')
-        while (True):
-            buf = ''
-            timeout = 1
-            r,w,e = select.select([sock], [], [], timeout)
-            if sock in r:
-                buf = sock.recvfrom(1024)
-                parse_respond(str(buf), server_number)
-                break
-            else:
-                print('no data')
-                break
-        if (sock.sendto(info, (server, port)) == 1):
-            print('sendto error')
-    #os.system("PAUSE")
-    #TODO: po udanym skanowaniu zatrzymaj os.system("PAUSE")
+        
+        try: 
+            sock.connect((server, port))
+            if (sock.sendto(info, (server, port)) == 1):
+                print('sendto error')
+            while (True):
+                buf = ''
+                timeout = 1
+                r,w,e = select.select([sock], [], [], timeout)
+                if sock in r:
+                    buf = sock.recvfrom(1024)
+                    parse_respond(str(buf), server_number)
+                    break
+                else:
+                    print('no data')
+                    break
+            if (sock.sendto(info, (server, port)) == 1):
+                print('sendto error')
+        #os.system("PAUSE")
+        #TODO: po udanym skanowaniu zatrzymaj os.system("PAUSE")
+        except OSError:
+            print("server error")
 
 def manage_choice(choice):
     if choice == '1':
