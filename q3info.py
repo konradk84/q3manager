@@ -63,12 +63,13 @@ def make_servers_dict():
             print('not able to open file')
         while True:
             server_line = get_servers.readline()
-            server_line = server_line.strip('\n')
-            number = number + 1
-            if server_line == '':
-                get_servers.close()
-                return server_dict
-            server_dict[number] = server_line
+            if server_line.find("#") == -1:
+                server_line = server_line.strip('\n')
+                number = number + 1
+                if server_line == '':
+                    get_servers.close()
+                    return server_dict
+                server_dict[number] = server_line
         return server_dict
 
 def show_servers(server_dict):
